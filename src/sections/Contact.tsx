@@ -9,7 +9,7 @@ import { FlowGradient } from '../components/FlowGradient'
 // isn't shown on the page).
 const EMAIL = 'obzervo.studios@gmail.com'
 // wa.me opens a chat with this number (international format, digits only) with the message typed in.
-const WHATSAPP = `https://wa.me/905355536884?text=${encodeURIComponent('Hi Obzervo, I’d like to start a project.')}`
+const WHATSAPP = `https://wa.me/905355536884?text=${encodeURIComponent('مرحبا Obzervo، بدّي أبدأ مشروع معكم.')}`
 
 // `light` off: the page draws one continuous light behind this section and what precedes it.
 export function Contact({ light = true }: { light?: boolean }) {
