@@ -106,6 +106,8 @@ export function Preloader({ onReveal, onDone }: Props) {
   return (
     <div className="preloader" ref={root}>
       <div className="preloader__curtain" ref={curtain}>
+        <div className="preloader__fill" aria-hidden="true" />
+        <div className="preloader__blur" aria-hidden="true" />
         <span className="preloader__word">Observing <Ar>· نتأمّل</Ar></span>
         <span className="preloader__count" ref={count}>000</span>
       </div>
