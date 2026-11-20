@@ -8,7 +8,6 @@ import { LiquidGlassFilter } from './components/LiquidGlassFilter'
 import { Hero } from './sections/Hero'
 import { Marquee } from './sections/Marquee'
 import { Manifesto } from './sections/Manifesto'
-import { SelectedWork } from './sections/SelectedWork'
 import { Prism } from './sections/Prism'
 import { Contact } from './sections/Contact'
 import { FlowGradient } from './components/FlowGradient'
@@ -20,7 +19,6 @@ const Sections = memo(function Sections() {
     <>
       <Marquee />
       <Manifesto />
-      <SelectedWork />
       <div className="flow-zone">
         <div className="flow-zone__light" aria-hidden="true">
           <FlowGradient />

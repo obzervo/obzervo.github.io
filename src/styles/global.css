@@ -731,6 +731,8 @@ img, svg, canvas { display: block; }
 .cat-card:hover { transform: translateY(-6.6px); }
 .cat-card__go { display: inline-flex; align-items: center; gap: 6.6px; color: var(--text-2); transition: color 0.3s; }
 .cat-card:hover .cat-card__go { color: var(--text); }
+/* Greyed with the hero background right after the loader, colouring up as it does. */
+.cat-card__media { filter: grayscale(var(--hero-mono, 0)); }
 .cat-card__media { aspect-ratio: 16 / 10; border-radius: 15.4px; overflow: hidden; margin-bottom: 15.4px; }
 .cat-card__title { margin: 0 0 6.6px; font-size: 24.2px; font-weight: 400; letter-spacing: -0.03em; }
 .cat-card__blurb { margin: 0; font-size: 15.4px; line-height: 1.45; color: var(--text-2); }

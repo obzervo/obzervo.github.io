@@ -6,6 +6,8 @@ type Props = {
   children: ReactNode
   variant?: 'light' | 'glass'
   arrow?: boolean
+  /** Opens in a new tab (e.g. WhatsApp). */
+  external?: boolean
 }
 
 export function Arrow() {
@@ -17,7 +19,7 @@ export function Arrow() {
 }
 
 // Pill button with a rolling label; in-page anchors go through Lenis.
-export function Button({ href, children, variant = 'light', arrow = true }: Props) {
+export function Button({ href, children, variant = 'light', arrow = true, external }: Props) {
   const onClick = (e: MouseEvent) => {
     if (href.startsWith('#')) {
       e.preventDefault()
@@ -25,7 +27,12 @@ export function Button({ href, children, variant = 'light', arrow = true }: Prop
     }
   }
   return (
-    <a href={href} onClick={onClick} className={`btn btn--${variant} ${variant === 'glass' ? 'glass' : ''}`}>
+    <a
+      href={href}
+      onClick={onClick}
+      className={`btn btn--${variant} ${variant === 'glass' ? 'glass' : ''}`}
+      {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}
+    >
       <span className="btn__label">
         <span>{children}</span>
         <span aria-hidden="true">{children}</span>

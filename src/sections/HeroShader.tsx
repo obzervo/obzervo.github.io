@@ -15,6 +15,7 @@ uniform vec2 uRes;
 uniform float uTime;
 uniform float uRibPx;
 uniform vec2 uMouse;
+uniform float uMono; // 1 = the loader's steel palette, 0 = full colour
 
 const vec3 INK = vec3(0.008, 0.027, 0.039);       // #02070A
 const vec3 NAVY = vec3(0.02, 0.06, 0.13);         // first hint of blue out of the black
@@ -25,6 +26,8 @@ const vec3 ROSE = vec3(0.86, 0.42, 0.6);          // the pink seam between blue 
 const vec3 ORANGE = vec3(0.988, 0.451, 0.302);    // #FC734D
 const vec3 EMBER = vec3(0.93, 0.33, 0.24);        // deeper orange at the bottom centre
 const vec3 PEACH = vec3(1.0, 0.85, 0.76);         // soft glow at the arch's crown
+const vec3 STEEL = vec3(0.31, 0.4, 0.52);         // the loader's steel grey, leaning blue
+const vec3 PEARL = vec3(0.81, 0.88, 0.95);        // its near-white highlight, cool
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float noise(vec2 p) {
@@ -101,8 +104,15 @@ void main() {
   col *= mix(0.88, 1.0, edge);
   col *= 1.0 + (0.5 - abs(f + 0.18)) * 0.18;
 
-  // Film grain.
-  col += (hash(gl_FragCoord.xy + fract(uTime) * 100.0) - 0.5) * 0.035;
+  // Steel mode, right after the loader: the same light in the loader's palette, ink through
+  // steel grey to near-white by brightness, so the curtain hands over without a colour jump.
+  float lum = dot(col, vec3(0.299, 0.587, 0.114));
+  vec3 steel = mix(INK, STEEL, smoothstep(0.0, 0.45, lum));
+  steel = mix(steel, PEARL, smoothstep(0.45, 0.95, lum));
+  col = mix(col, steel, uMono);
+
+  // Film grain, coarser in steel mode like the loader's.
+  col += (hash(gl_FragCoord.xy + fract(uTime) * 100.0) - 0.5) * mix(0.035, 0.08, uMono);
 
   gl_FragColor = vec4(col, 1.0);
 }
@@ -145,6 +155,7 @@ export function HeroShader({ running }: { running: boolean }) {
     const uTime = gl.getUniformLocation(prog, 'uTime')
     const uRib = gl.getUniformLocation(prog, 'uRibPx')
     const uMouse = gl.getUniformLocation(prog, 'uMouse')
+    const uMono = gl.getUniformLocation(prog, 'uMono')
 
     const dpr = Math.min(window.devicePixelRatio || 1, 1.5)
     const resize = () => {
@@ -173,8 +184,18 @@ export function HeroShader({ running }: { running: boolean }) {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const start = performance.now()
     let raf = 0
+    // The hero's resting look is the loader's steel palette; scrolling down blends in the colour
+    // over the first 70% of a screen, and scrolling back up returns to steel. Eased each frame
+    // so the blend glides instead of following every scroll step.
+    const monoTarget = () => {
+      const t = Math.min(1, Math.max(0, window.scrollY / (window.innerHeight * 0.7)))
+      return 1 - t * t * (3 - 2 * t)
+    }
+    let mono = monoTarget()
+    let shared = -1
     const draw = (now: number) => {
       if (gl.isContextLost()) return
+      gl.uniform1f(uMono, mono)
       gl.uniform1f(uTime, reduce ? 8 : (now - start) / 1000)
       gl.uniform2f(uMouse, mouse.x, mouse.y)
       gl.drawArrays(gl.TRIANGLES, 0, 3)
@@ -194,6 +215,12 @@ export function HeroShader({ running }: { running: boolean }) {
       if (!visible || !live.current) return
       mouse.x += (mouse.tx - mouse.x) * 0.04
       mouse.y += (mouse.ty - mouse.y) * 0.04
+      mono += (monoTarget() - mono) * 0.08
+      // Shared with the hero cards' previews so they colour up together (only written on change).
+      if (Math.abs(mono - shared) > 0.002) {
+        shared = mono
+        document.documentElement.style.setProperty('--hero-mono', mono.toFixed(3))
+      }
       draw(now)
     }
     raf = requestAnimationFrame(frame)

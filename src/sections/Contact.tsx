@@ -5,8 +5,11 @@ import { Ar } from '../components/Arabic'
 import { pageUrl } from '../lib/paths'
 import { FlowGradient } from '../components/FlowGradient'
 
-// TODO: replace placeholder contact details with the real ones.
-const EMAIL = 'hello@obzervo.com'
+// The two ways to reach the studio: email, and WhatsApp on the studio's Palestinian number.
+const EMAIL = 'obzervo.studios@gmail.com'
+const PHONE = '+970 59 406 1213'
+// wa.me opens a chat with this number (international format, digits only) with the message typed in.
+const WHATSAPP = `https://wa.me/970594061213?text=${encodeURIComponent('Hi Obzervo, I’d like to start a project.')}`
 
 // `light` off: the page draws one continuous light behind this section and what precedes it.
 export function Contact({ light = true }: { light?: boolean }) {
@@ -36,7 +39,9 @@ export function Contact({ light = true }: { light?: boolean }) {
         <Reveal delay={0.2}>
           <div className="contact__ctas">
             <Button href={`mailto:${EMAIL}`}>{EMAIL}</Button>
-            <Button href={`mailto:${EMAIL}?subject=AI%20audit`} variant="glass" arrow={false}>Request an AI audit</Button>
+            <Button href={WHATSAPP} variant="glass" external>
+              WhatsApp · {PHONE}
+            </Button>
           </div>
         </Reveal>
       </div>
