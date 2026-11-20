@@ -5,11 +5,11 @@ import { Ar } from '../components/Arabic'
 import { pageUrl } from '../lib/paths'
 import { FlowGradient } from '../components/FlowGradient'
 
-// The two ways to reach the studio: email, and WhatsApp on the studio's Palestinian number.
+// The two ways to reach the studio: email, and WhatsApp (+90 535 553 6884; the number itself
+// isn't shown on the page).
 const EMAIL = 'obzervo.studios@gmail.com'
-const PHONE = '+970 59 406 1213'
 // wa.me opens a chat with this number (international format, digits only) with the message typed in.
-const WHATSAPP = `https://wa.me/970594061213?text=${encodeURIComponent('Hi Obzervo, I’d like to start a project.')}`
+const WHATSAPP = `https://wa.me/905355536884?text=${encodeURIComponent('Hi Obzervo, I’d like to start a project.')}`
 
 // `light` off: the page draws one continuous light behind this section and what precedes it.
 export function Contact({ light = true }: { light?: boolean }) {
@@ -40,7 +40,7 @@ export function Contact({ light = true }: { light?: boolean }) {
           <div className="contact__ctas">
             <Button href={`mailto:${EMAIL}`}>{EMAIL}</Button>
             <Button href={WHATSAPP} variant="glass" external>
-              WhatsApp · {PHONE}
+              WhatsApp
             </Button>
           </div>
         </Reveal>
