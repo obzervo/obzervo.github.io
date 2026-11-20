@@ -10,7 +10,7 @@ type Props = {
 }
 
 // Glass settings shared by the canvas and the size of the SVG that takes over from it.
-const LOGO_SIZE = 220 // plate edge in px before the component's responsive fit
+const LOGO_SIZE = 242 // plate edge in px before the component's responsive fit
 const LOGO_SCALE = 0.72 // logo edge as a fraction of the plate
 const GLASS_END = 1.8 // seconds until the glass has cleared and only the logo is left
 const SPIN = GLASS_END + 0.1 // the bare mark turns a third while the name rises in

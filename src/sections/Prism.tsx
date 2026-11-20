@@ -93,8 +93,6 @@ export function Prism() {
         .to('.prism__line--b .pw', { ...shown, stagger: 0.025 }, 0.4)
         .to('.prism__line--b .pw', { ...gone, stagger: 0.015 }, 0.64)
         .fromTo('.prism__finale', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.12, ease: 'power3.out' }, 0.8)
-        // The horizon light warms up across the whole section.
-        .fromTo('.prism__horizon', { opacity: 0.6 }, { opacity: 1, duration: 1, ease: 'none' }, 0)
     }, root)
     return () => ctx.revert()
   }, [])
@@ -102,7 +100,6 @@ export function Prism() {
   return (
     <section className="prism" ref={root} id="studio">
       <div className="prism__sticky">
-        <div className="prism__horizon" aria-hidden="true" />
         <div className="prism__canvas">
           {USE_LIQUID_GLASS ? mount && (
             <LiquidGlassLogo
@@ -110,7 +107,7 @@ export function Prism() {
               logo={`${import.meta.env.BASE_URL}logo.svg`}
               ending="logo"
               paused
-              logoSize={300}
+              logoSize={330}
               logoScale={0.72}
               logoColor="#f3f6f7"
               background="#02070A"
@@ -138,7 +135,7 @@ export function Prism() {
         <div className="prism__finale">
           <p className="prism__ar"><Ar>العين قبل الأداة.</Ar></p>
           <p className="prism__body">
-            Anyone can generate. We look closely first — then direct every output until it’s unmistakably yours.
+            Anyone can generate. Not everyone can engineer the result. We look closely first, then direct every output until it’s yours.
           </p>
         </div>
 

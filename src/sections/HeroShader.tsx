@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 // Hero background: a column of light rising from the bottom centre (Cantaloupe core,
 // Electric Blue fan, Midnight Black above), seen through vertical ribbed glass.
@@ -120,6 +120,8 @@ export function HeroShader({ running }: { running: boolean }) {
   const canvas = useRef<HTMLCanvasElement>(null)
   const live = useRef(running)
   live.current = running
+  // Bumped when the browser restores a lost WebGL context, to rebuild the scene from scratch.
+  const [generation, setGeneration] = useState(0)
 
   useEffect(() => {
     const el = canvas.current!
@@ -150,10 +152,8 @@ export function HeroShader({ running }: { running: boolean }) {
       el.height = Math.round(el.clientHeight * dpr)
       gl.viewport(0, 0, el.width, el.height)
       gl.uniform2f(uRes, el.width, el.height)
-      gl.uniform1f(uRib, (el.clientWidth < 700 ? 8 : 11) * dpr)
+      gl.uniform1f(uRib, (el.clientWidth < 770 ? 9 : 12) * dpr)
     }
-    resize()
-    window.addEventListener('resize', resize)
 
     const mouse = { x: 0, y: 0, tx: 0, ty: 0 }
     const onMove = (e: PointerEvent) => {
@@ -164,33 +164,60 @@ export function HeroShader({ running }: { running: boolean }) {
 
     // Only render while the hero is on screen.
     let visible = true
-    const io = new IntersectionObserver(([e]) => (visible = e.isIntersecting))
+    const io = new IntersectionObserver(([e]) => {
+      visible = e.isIntersecting
+      if (visible) draw(performance.now())
+    })
     io.observe(el)
 
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const start = performance.now()
     let raf = 0
-    let drawn = false
-    const frame = (now: number) => {
-      raf = requestAnimationFrame(frame)
-      // Behind the preloader it holds its first frame, leaving the GPU to the loading animation.
-      if (!visible || (!live.current && drawn)) return
-      drawn = true
-      mouse.x += (mouse.tx - mouse.x) * 0.04
-      mouse.y += (mouse.ty - mouse.y) * 0.04
+    const draw = (now: number) => {
+      if (gl.isContextLost()) return
       gl.uniform1f(uTime, reduce ? 8 : (now - start) / 1000)
       gl.uniform2f(uMouse, mouse.x, mouse.y)
       gl.drawArrays(gl.TRIANGLES, 0, 3)
     }
+    // Resizing a canvas wipes it (phones resize whenever the address bar moves), so every
+    // resize redraws at once instead of leaving it blank until the next animated frame.
+    function resizeAndDraw() {
+      resize()
+      draw(performance.now())
+    }
+    window.addEventListener('resize', resizeAndDraw)
+    resizeAndDraw()
+
+    const frame = (now: number) => {
+      raf = requestAnimationFrame(frame)
+      // Behind the preloader it holds its first frame, leaving the GPU to the loading animation.
+      if (!visible || !live.current) return
+      mouse.x += (mouse.tx - mouse.x) * 0.04
+      mouse.y += (mouse.ty - mouse.y) * 0.04
+      draw(now)
+    }
     raf = requestAnimationFrame(frame)
+
+    // Coming back to the tab: repaint straight away rather than waiting for the loop.
+    const onShow = () => document.visibilityState === 'visible' && draw(performance.now())
+    document.addEventListener('visibilitychange', onShow)
+
+    // A lost GPU context leaves the canvas blank for good unless it is rebuilt.
+    const onLost = (e: Event) => e.preventDefault()
+    const onRestored = () => setGeneration((g) => g + 1)
+    el.addEventListener('webglcontextlost', onLost)
+    el.addEventListener('webglcontextrestored', onRestored)
 
     return () => {
       cancelAnimationFrame(raf)
       io.disconnect()
-      window.removeEventListener('resize', resize)
+      window.removeEventListener('resize', resizeAndDraw)
+      document.removeEventListener('visibilitychange', onShow)
+      el.removeEventListener('webglcontextlost', onLost)
+      el.removeEventListener('webglcontextrestored', onRestored)
       window.removeEventListener('pointermove', onMove)
     }
-  }, [])
+  }, [generation])
 
   return <canvas ref={canvas} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />
 }

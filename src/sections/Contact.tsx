@@ -2,14 +2,21 @@ import { Reveal } from '../components/Reveal'
 import { Button } from '../components/Button'
 import { BrandWord, Wordmark } from '../components/Logo'
 import { Ar } from '../components/Arabic'
+import { pageUrl } from '../lib/paths'
+import { FlowGradient } from '../components/FlowGradient'
 
 // TODO: replace placeholder contact details with the real ones.
 const EMAIL = 'hello@obzervo.com'
 
-export function Contact() {
+// `light` off: the page draws one continuous light behind this section and what precedes it.
+export function Contact({ light = true }: { light?: boolean }) {
   return (
     <section className="contact" id="contact">
-      <div className="contact__glow" />
+      {light && (
+        <div className="contact__light" aria-hidden="true">
+          <FlowGradient />
+        </div>
+      )}
       <div className="container">
         <Reveal>
           <p className="contact__ar"><Ar>خلّينا نحكي</Ar></p>
@@ -40,24 +47,24 @@ export function Contact() {
             <div className="footer__grid">
               <div>
                 <Wordmark />
-                <p className="muted" style={{ maxWidth: 280, marginTop: 16 }}>
+                <p className="muted" style={{ maxWidth: 308, marginTop: 18 }}>
                   AI creative design &amp; engineering studio, based in Palestine.
                 </p>
               </div>
               <div>
                 <h5 className="label">Studio</h5>
                 <ul>
-                  <li><a href="#method">Method</a></li>
-                  <li><a href="#services">Services</a></li>
-                  <li><a href="#difference">Difference</a></li>
+                  <li><a href={pageUrl('work')}>Work</a></li>
+                  <li><a href={pageUrl('services')}>Services</a></li>
+                  <li><a href="#contact">Contact</a></li>
                 </ul>
               </div>
               <div>
                 <h5 className="label">Services</h5>
                 <ul>
-                  <li><a href="#services">Brand identity</a></li>
-                  <li><a href="#services">AI visuals</a></li>
-                  <li><a href="#services">Websites</a></li>
+                  <li><a href={pageUrl('work') + '?c=branding'}>Brand identity</a></li>
+                  <li><a href={pageUrl('work') + '?c=visuals'}>AI visuals &amp; video</a></li>
+                  <li><a href={pageUrl('work') + '?c=websites'}>Websites</a></li>
                 </ul>
               </div>
               <div>
@@ -70,10 +77,12 @@ export function Contact() {
               </div>
             </div>
             <p className="footer__big" aria-hidden="true">Obzervo</p>
+            {/* The name's Arabic companion: "a look", and also "a point of view". */}
+            <p className="footer__word"><Ar>نظرة</Ar></p>
           </div>
           <div className="footer__bottom label">
-            <span>© {new Date().getFullYear()} <BrandWord /> · <Ar>صُنع في فلسطين</Ar></span>
-            <span>We observe. AI creates. We engineer the result.</span>
+            <span>© {new Date().getFullYear()} <BrandWord /></span>
+            <span>We observe. We engineer. AI executes.</span>
           </div>
         </div>
       </footer>

@@ -9,23 +9,11 @@ const SERVICES = [
   { name: 'AI audit & fix', desc: 'We take your existing AI output, find where it breaks, and rebuild it properly.' },
 ]
 
+// The service list on the Services page; each row leads to the contact section.
 export function Services() {
   return (
-    <section className="section" id="services">
+    <section className="section section--flush" id="services">
       <div className="container">
-        <div className="services__head">
-          <Reveal>
-            <p className="section-label label">Services</p>
-            <h2 className="h2">
-              Everything your brand
-              <br />
-              needs, <span className="serif">directed.</span>
-            </h2>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <p>Faster and more affordable than a traditional studio. More taste and system than any AI tool.</p>
-          </Reveal>
-        </div>
         <div className="services__list">
           {SERVICES.map((s, i) => (
             <Reveal key={s.name} delay={i * 0.05} y={24}>

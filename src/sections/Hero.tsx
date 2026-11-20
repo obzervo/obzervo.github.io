@@ -1,103 +1,34 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 import { gsap } from '../lib/scroll'
-import { brandTileBg } from '../lib/brand'
-import { Button } from '../components/Button'
-import { LogoMark } from '../components/Logo'
+import { Arrow, Button } from '../components/Button'
+import { WorkMedia } from '../components/WorkMedia'
+import { CATEGORIES, PROJECTS } from '../content/work'
+import { pageUrl } from '../lib/paths'
 import { HeroShader } from './HeroShader'
 import { Ar } from '../components/Arabic'
 
-const STEPS = ['Observe', 'Define', 'Engineer', 'Deliver']
-
-// Glass widget: a live "brand audit" that walks the four-step method on a loop.
-function ObserveCard({ play }: { play: boolean }) {
-  const [active, setActive] = useState(0)
-  const score = useRef<HTMLElement>(null)
-  const bar = useRef<HTMLSpanElement>(null)
-
-  useEffect(() => {
-    if (!play) return
-    const id = setInterval(() => setActive((a) => (a + 1) % STEPS.length), 2400)
-    return () => clearInterval(id)
-  }, [play])
-
-  useEffect(() => {
-    if (!play) return
-    const target = [38, 61, 84, 97][active]
-    const n = { v: Number(score.current?.textContent ?? 38) }
-    const tw = gsap.to(n, {
-      v: target,
-      duration: 1.4,
-      ease: 'expo.out',
-      onUpdate: () => {
-        if (score.current) score.current.textContent = String(Math.round(n.v))
-      },
-    })
-    gsap.to(bar.current, { width: `${target}%`, duration: 1.4, ease: 'expo.out' })
-    return () => {
-      tw.kill()
-    }
-  }, [active, play])
-
+// The three things the studio makes, each opening its part of the Work page, with a preview
+// of the latest project in it.
+function CategoryCard({ index }: { index: number }) {
+  const cat = CATEGORIES[index]
+  const inCat = PROJECTS.filter((p) => p.category === cat.id)
+  const preview = inCat.find((p) => p.src) ?? inCat[0]
   return (
-    <aside className="dock-card observe-card glass glass--liquid" aria-label="Brand consistency audit">
-      <div className="observe-card__head">
-        <span className="label muted">Brand audit</span>
-        <span className="observe-card__live label"><i />Live</span>
-      </div>
-      <div className="observe-card__score">
-        <strong ref={score}>38</strong>
-        <span className="muted">% on-brand</span>
-      </div>
-      <div className="observe-card__bar"><span ref={bar} style={{ width: '38%' }} /></div>
-      <ol className="observe-card__steps">
-        {STEPS.map((s, i) => (
-          <li key={s} className={i === active ? 'is-active' : i < active ? 'is-done' : ''}>
-            <span className="idx">0{i + 1}</span>
-            <span>{s}</span>
-            <span className="state">{i === active ? 'Running' : i < active ? 'Done' : 'Queued'}</span>
-          </li>
-        ))}
-      </ol>
-    </aside>
-  )
-}
-
-function VisualsCard() {
-  return (
-    <aside className="dock-card visuals-card glass" aria-hidden="true">
+    <a
+      className={`dock-card cat-card glass ${index === 1 ? 'glass--liquid' : ''}`}
+      href={`${pageUrl('work')}?c=${cat.id}`}
+      data-cursor
+    >
       <div className="dock-card__head">
-        <span className="label muted">AI visuals</span>
-        <span className="label muted">Campaign · 06</span>
+        <span className="label muted">0{index + 1}</span>
+        <span className="cat-card__go label">
+          See work <Arrow />
+        </span>
       </div>
-      <div className="visuals-card__grid">
-        {Array.from({ length: 6 }, (_, i) => (
-          <span key={i} style={{ background: brandTileBg(i + 2) }}>
-            <LogoMark />
-          </span>
-        ))}
-      </div>
-    </aside>
-  )
-}
-
-function SystemCard() {
-  return (
-    <aside className="dock-card system-card glass" aria-hidden="true">
-      <div className="dock-card__head">
-        <span className="label muted">Brand system</span>
-        <span className="system-card__lock label">Locked</span>
-      </div>
-      <div className="system-card__swatches">
-        <span style={{ background: '#02070A' }}><b className="label">02070A</b></span>
-        <span style={{ background: '#0297DE' }}><b className="label">0297DE</b></span>
-        <span style={{ background: '#FC734D' }}><b className="label">FC734D</b></span>
-      </div>
-      <div className="system-card__type">
-        <span className="system-card__aa">Aa</span>
-        <span className="system-card__aa serif">Aa</span>
-        <span className="label muted">Light · prism, soft<br />Grain · 0.06<br />Drift · 0</span>
-      </div>
-    </aside>
+      <div className="cat-card__media">{preview && <WorkMedia project={preview} index={index} />}</div>
+      <h3 className="cat-card__title">{cat.label}</h3>
+      <p className="cat-card__blurb">{cat.blurb}</p>
+    </a>
   )
 }
 
@@ -159,14 +90,14 @@ export function Hero({ ready }: { ready: boolean }) {
         </p>
         <div className="hero__ctas">
           <Button href="#contact">Start a project</Button>
-          <Button href="#method" variant="glass" arrow={false}>See the method</Button>
+          <Button href={pageUrl('work')} variant="glass" arrow={false}>See our work</Button>
         </div>
       </div>
 
       <div className="hero__dock container">
-        <VisualsCard />
-        <ObserveCard play={ready} />
-        <SystemCard />
+        {CATEGORIES.map((c, i) => (
+          <CategoryCard key={c.id} index={i} />
+        ))}
       </div>
     </section>
   )

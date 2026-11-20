@@ -8,12 +8,10 @@ import { LiquidGlassFilter } from './components/LiquidGlassFilter'
 import { Hero } from './sections/Hero'
 import { Marquee } from './sections/Marquee'
 import { Manifesto } from './sections/Manifesto'
-import { Method } from './sections/Method'
-import { Services } from './sections/Services'
-import { Compare } from './sections/Compare'
+import { SelectedWork } from './sections/SelectedWork'
 import { Prism } from './sections/Prism'
-import { Principles } from './sections/Principles'
 import { Contact } from './sections/Contact'
+import { FlowGradient } from './components/FlowGradient'
 
 // Everything below the hero is static: memoised so the loader's state changes (curtain lifting,
 // loader unmounting) don't re-render the whole page mid-animation.
@@ -22,12 +20,14 @@ const Sections = memo(function Sections() {
     <>
       <Marquee />
       <Manifesto />
-      <Method />
-      <Services />
-      <Compare />
-      <Prism />
-      <Principles />
-      <Contact />
+      <SelectedWork />
+      <div className="flow-zone">
+        <div className="flow-zone__light" aria-hidden="true">
+          <FlowGradient />
+        </div>
+        <Prism />
+        <Contact light={false} />
+      </div>
     </>
   )
 })

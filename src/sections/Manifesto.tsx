@@ -3,18 +3,12 @@ import { gsap } from '../lib/scroll'
 import { Reveal } from '../components/Reveal'
 import { BrandWord } from '../components/Logo'
 import { Ar } from '../components/Arabic'
+import { FlowGradient } from '../components/FlowGradient'
 
-// Words light up one by one as the paragraph scrolls through the viewport.
-const TEXT: { w: string; serif?: boolean }[] = [
-  ...'Every business has AI now. Most of them use it badly — generic images, template websites, no two outputs that look like the same brand.'
-    .split(' ')
-    .map((w) => ({ w })),
-  ...'AI isn’t the problem.'.split(' ').map((w) => ({ w })),
-  { w: 'Lack', serif: true },
-  { w: 'of', serif: true },
-  { w: 'direction', serif: true },
-  { w: 'is.', serif: true },
-]
+// Words light up one by one as the paragraph scrolls through the viewport. The closing
+// phrase sits on a line of its own, never split.
+const TEXT = 'Every business has AI now. Very few get results that look like their own brand — generic images, template websites, no two outputs that feel the same. AI isn’t the problem.'.split(' ')
+const ACCENT = 'Lack of direction is.'.split(' ')
 
 export function Manifesto() {
   const root = useRef<HTMLElement>(null)
@@ -32,25 +26,37 @@ export function Manifesto() {
   }, [])
 
   return (
-    <section className="section" ref={root}>
+    <section className="section ambient" ref={root}>
+      <div className="ambient__light" aria-hidden="true">
+        <FlowGradient tone="faint" speed={0.1} />
+      </div>
       <div className="container">
         <Reveal><p className="section-label label">The problem</p></Reveal>
         <p className="manifesto__text">
-          {TEXT.map((t, i) => (
+          {TEXT.map((w, i) => (
             <span key={i}>
-              <span className={`word ${t.serif ? 'serif' : ''}`}>{t.w}</span>{' '}
+              <span className="word">{w}</span>{' '}
             </span>
           ))}
+          <br />
+          <span className="manifesto__accent">
+            {ACCENT.map((w, i) => (
+              <span key={i}>
+                <span className="word serif">{w}</span>
+                {i < ACCENT.length - 1 ? ' ' : ''}
+              </span>
+            ))}
+          </span>
         </p>
         <div className="manifesto__foot">
           <Reveal>
-            <span className="label muted">We observe. AI creates. We engineer the result.</span>
-            <span className="manifesto__ar"><Ar>نتأمّل. الذكاء يصنع. ونحن نهندس النتيجة.</Ar></span>
+            <span className="label muted">We observe. We engineer. AI executes.</span>
+            <span className="manifesto__ar"><Ar>نتأمّل. نُهندس. والذكاء يُنفّذ.</Ar></span>
           </Reveal>
           <Reveal delay={0.1}>
             <p>
               <BrandWord /> is the layer between your business and AI. We don’t just use it — we direct it, with a
-              human eye, real taste and an engineering mindset.
+              designer’s eye and an engineered process, so every output looks like you.
             </p>
           </Reveal>
         </div>

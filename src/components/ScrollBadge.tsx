@@ -2,19 +2,18 @@ import { useEffect, useRef } from 'react'
 import { gsap, getLenis, scrollToTarget, ScrollTrigger } from '../lib/scroll'
 import { LogoMark } from './Logo'
 
-const RING_TEXT = 'Observe · Define · Engineer · Deliver · '
+const RING_TEXT = 'We observe · We engineer · AI executes · '
 
 // One colour per section, in page order — the badge cross-fades as each section takes
 // over the middle of the screen, so moving down the page feels like moving between rooms.
 const SECTION_COLORS = [
-  '#F3F6F7', // hero — paper
-  '#FC734D', // problem — cantaloupe
-  '#5CC3F2', // method — sky
-  '#FFA98F', // services — peach
-  '#0297DE', // difference — electric blue
-  '#FFD9C9', // studio — pale peach
-  '#8FD3F7', // why obzervo — ice blue
-  '#FC734D', // contact — cantaloupe
+  // Cycled through the page's sections in order.
+  '#F3F6F7', // paper
+  '#FC734D', // cantaloupe
+  '#5CC3F2', // sky
+  '#FFA98F', // peach
+  '#0297DE', // electric blue
+  '#FFD9C9', // pale peach
 ]
 
 // Corner badge: the mark spins with scroll momentum — a scroll flick kicks it fast,
@@ -40,7 +39,7 @@ export function ScrollBadge({ visible }: { visible: boolean }) {
   }, [])
 
   useEffect(() => {
-    const sections = gsap.utils.toArray<HTMLElement>('main > section')
+    const sections = gsap.utils.toArray<HTMLElement>('main section')
     const triggers = sections.map((section, i) =>
       ScrollTrigger.create({
         trigger: section,
