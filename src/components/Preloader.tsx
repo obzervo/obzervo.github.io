@@ -118,6 +118,7 @@ export function Preloader({ onReveal, onDone }: Props) {
           logoColor="#f3f6f7"
           logoRelief={0} // flat, exactly like the SVG that takes over
           background="#02070A"
+          style={{ background: 'transparent' }} // the curtain's sheen and grain show through
           tileColor="#061722"
           aria-label="Obzervo"
           onReady={start}
