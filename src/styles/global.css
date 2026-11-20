@@ -601,6 +601,8 @@ img, svg, canvas { display: block; }
 .prism__finale { position: absolute; left: 0; right: 0; bottom: 15svh; z-index: 2; display: flex; justify-content: center; padding: 0 var(--gutter); pointer-events: none; }
 .prism__body { margin: 0; max-width: 506px; text-align: center; color: var(--text-2); font-size: clamp(17.6px, 1.3vw, 20.9px); }
 .prism__caption { position: absolute; bottom: 44px; left: 0; right: 0; display: flex; justify-content: space-between; padding: 0 var(--gutter); color: var(--text-3); z-index: 2; }
+/* Phones: the closing text needs the room, so the two corner captions step aside. */
+@media (max-width: 770px) { .prism__caption { display: none; } }
 
 
 /* ───────────────────────── Contact / Footer ───────────────────────── */
